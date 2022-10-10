@@ -1,0 +1,53 @@
+elasticsearch:
+  enabled: true
+  replicas: 1
+  minimumMasterNodes: 1
+  antiAffinity: "soft"
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  esJavaOpts: "-Xmx128m -Xms128m"
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512M"
+    limits:
+      cpu: "1000m"
+      memory: "512M"
+
+  volumeClaimTemplate:
+    accessModes: ["ReadWriteOnce"]
+    storageClassName: "standard"
+    resources:
+      requests:
+        storage: 100M
+
+neo4j-community:
+  enabled: true
+  acceptLicenseAgreement: "yes"
+  defaultDatabase: "graph.db"
+  existingPasswordSecret: neo4j-secrets
+
+mysql:
+  enabled: true
+  auth:
+    existingSecret: mysql-secrets
+
+cp-helm-charts:
+  cp-schema-registry:
+    enabled: true
+    kafka:
+      bootstrapServers: "prerequisites-kafka:9092"
+  cp-kafka:
+    enabled: false
+  cp-zookeeper:
+    enabled: false
+  cp-kafka-rest:
+    enabled: false
+  cp-kafka-connect:
+    enabled: false
+  cp-ksql-server:
+    enabled: false
+  cp-control-center:
+    enabled: false
+
+kafka:
+  enabled: true

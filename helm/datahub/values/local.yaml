@@ -1,0 +1,165 @@
+datahub-gms:
+  enabled: true
+  image:
+    repository: linkedin/datahub-gms
+    tag: "v0.8.45"
+
+datahub-frontend:
+  enabled: true
+  image:
+    repository: linkedin/datahub-frontend-react
+  ingress:
+    enabled: false
+
+acryl-datahub-actions:
+  enabled: true
+  image:
+    repository: acryldata/datahub-actions
+    tag: "b2c28a1"
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 300m
+      memory: 256Mi
+
+datahub-mae-consumer:
+  image:
+    repository: linkedin/datahub-mae-consumer
+    tag: "v0.8.45"
+
+datahub-mce-consumer:
+  image:
+    repository: linkedin/datahub-mce-consumer
+    tag: "v0.8.45"
+
+datahub-ingestion-cron:
+  enabled: false
+  image:
+    repository: acryldata/datahub-ingestion
+    tag: "v0.8.45"
+
+elasticsearchSetupJob:
+  enabled: true
+  image:
+    repository: linkedin/datahub-elasticsearch-setup
+    tag: "79575b2"
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    runAsUser: 1000
+  podAnnotations: {}
+
+kafkaSetupJob:
+  enabled: true
+  image:
+    repository: linkedin/datahub-kafka-setup
+    tag: "v0.8.45"
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    runAsUser: 1000
+  podAnnotations: {}
+
+mysqlSetupJob:
+  enabled: true
+  image:
+    repository: acryldata/datahub-mysql-setup
+    tag: "v0.8.45"
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    runAsUser: 1000
+  podAnnotations: {}
+
+prometheus-kafka-exporter:
+  enabled: false
+  kafkaServer:
+  - prerequisites-kafka:9092
+  sarama:
+    logEnabled: true
+  prometheus:
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+      interval: "30s"
+      additionalLabels: {}
+      targetLabels: []
+
+global:
+  graph_service_impl: neo4j
+  datahub_analytics_enabled: true
+  datahub_standalone_consumers_enabled: false
+
+  elasticsearch:
+    host: "elasticsearch-master"
+    port: "9200"
+    skipcheck: "false"
+    insecure: "false"
+
+  kafka:
+    bootstrap:
+      server: "prerequisites-kafka:9092"
+    zookeeper:
+      server: "prerequisites-zookeeper:2181"
+    schemaregistry:
+      url: "http://prerequisites-cp-schema-registry:8081"
+
+  neo4j:
+    host: "prerequisites-neo4j-community:7474"
+    uri: "bolt://prerequisites-neo4j-community"
+    username: "neo4j"
+    password:
+      secretRef: neo4j-secrets
+      secretKey: neo4j-password
+
+  sql:
+    datasource:
+      host: "prerequisites-mysql:3306"
+      hostForMysqlClient: "prerequisites-mysql"
+      port: "3306"
+      url: "jdbc:mysql://prerequisites-mysql:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8&enabledTLSProtocols=TLSv1.2"
+      driver: "com.mysql.cj.jdbc.Driver"
+      username: "root"
+      password:
+        secretRef: mysql-secrets
+        secretKey: mysql-root-password
+
+  datahub:
+    gms:
+      port: "8080"
+      nodePort: "30001"
+
+    monitoring:
+      enablePrometheus: true
+
+    mae_consumer:
+      port: "9091"
+      nodePort: "30002"
+
+    appVersion: "1.0"
+
+    encryptionKey:
+      secretRef: "datahub-encryption-secrets"
+      secretKey: "encryption_key_secret"
+      provisionSecret: true
+
+    managed_ingestion:
+      enabled: true
+      defaultCliVersion: "0.8.45"
+
+    metadata_service_authentication:
+      enabled: false
+      systemClientId: "__datahub_system"
+      systemClientSecret:
+        secretRef: "datahub-auth-secrets"
+        secretKey: "token_service_signing_key"
+      tokenService:
+        signingKey:
+          secretRef: "datahub-auth-secrets"
+          secretKey: "token_service_signing_key"
+        salt:
+          secretRef: "datahub-auth-secrets"
+          secretKey: "token_service_salt"
+
+      provisionSecrets: true

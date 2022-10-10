@@ -1,0 +1,18 @@
+dependencies:
+- name: elasticsearch
+  repository: https://helm.elastic.co
+  version: 7.17.3
+- name: neo4j-community
+  repository: https://equinor.github.io/helm-charts/charts/
+  version: 1.2.5
+- name: mysql
+  repository: https://charts.bitnami.com/bitnami
+  version: 9.1.2
+- name: cp-helm-charts
+  repository: https://confluentinc.github.io/cp-helm-charts/
+  version: 0.6.0
+- name: kafka
+  repository: https://charts.bitnami.com/bitnami
+  version: 17.1.0
+digest: sha256:2ec54b355b558acb5a965a681302d962b9277b327b67abc1e2a5789754fe59ea
+generated: "2022-10-10T18:19:23.641042+13:00"

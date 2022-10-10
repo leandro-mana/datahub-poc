@@ -1,0 +1,4 @@
+*.tgz
+.vscode
+.idea
+.venv

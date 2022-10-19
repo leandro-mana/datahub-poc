@@ -1,6 +1,0 @@
-apiVersion: v2
-name: datahub-gms
-description: A Helm chart for LinkedIn DataHub's datahub-gms component
-type: application
-version: 0.2.9
-appVersion: v0.8.44

@@ -12,7 +12,7 @@ datahub-frontend:
     enabled: false
 
 acryl-datahub-actions:
-  enabled: true
+  enabled: false
   image:
     repository: acryldata/datahub-actions
     tag: "b2c28a1"
@@ -71,6 +71,41 @@ mysqlSetupJob:
   securityContext:
     runAsUser: 1000
   podAnnotations: {}
+
+postgresqlSetupJob:
+  enabled: false
+  image:
+    repository: acryldata/datahub-postgres-setup
+    tag: "v0.9.0"
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    runAsUser: 1000
+  podAnnotations: {}
+
+datahubUpgrade:
+  enabled: false
+  image:
+    repository: acryldata/datahub-upgrade
+    tag: "v0.9.0"
+  batchSize: 1000
+  batchDelayMs: 100
+  noCodeDataMigration:
+    sqlDbType: "MYSQL"
+    # sqlDbType: "POSTGRES"
+  podSecurityContext: {}
+    # fsGroup: 1000
+  securityContext: {}
+    # runAsUser: 1000
+  podAnnotations: {}
+  restoreIndices:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 300m
+        memory: 256Mi
 
 prometheus-kafka-exporter:
   enabled: false
@@ -142,7 +177,9 @@ global:
     encryptionKey:
       secretRef: "datahub-encryption-secrets"
       secretKey: "encryption_key_secret"
-      provisionSecret: true
+      provisionSecret:
+        enabled: true
+        autoGenerate: true
 
     managed_ingestion:
       enabled: true
@@ -162,4 +199,6 @@ global:
           secretRef: "datahub-auth-secrets"
           secretKey: "token_service_salt"
 
-      provisionSecrets: true
+      provisionSecrets:
+        enabled: false
+        autoGenerate: false

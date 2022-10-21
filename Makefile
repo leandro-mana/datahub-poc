@@ -1,5 +1,5 @@
 # Globals
-.PHONY: help
+.PHONY: help local build accept
 .DEFAULT: help
 .ONESHELL:
 .SILENT:
@@ -7,6 +7,7 @@ SHELL=/bin/bash
 .SHELLFLAGS = -ceo pipefail
 
 # Targets
+LOCAL_TARGET = Local Environment Target
 BUILD_TARGET = Build Target
 ACCEPT_TARGET = Accept Target - Deploy
 
@@ -19,8 +20,12 @@ export
 help:
 	$(INFO) "Run: make <target>"
 	$(INFO) "List of Supported Targets:"
+	@echo -e "local/<action> -> $$LOCAL_TARGET, action=[cluster|frontend|status|clean]"
 	@echo -e "build -> $$BUILD_TARGET"
 	@echo -e "accept -> $$ACCEPT_TARGET\n"
+
+local/%:
+	./scripts/local.sh $*
 
 build:
 	$(INFO) "$$BUILD_TARGET"

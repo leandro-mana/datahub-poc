@@ -11,7 +11,17 @@ function get_config {
     export SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
     source ${SCRIPT_DIR}/config.sh
 
-} 
+}
+
+function get_docker_images {
+    if [ ${DATAHUB_ENVIRONMENT} != 'local' ]; then
+        for image in ${DOCKER_IMAGES[@]}; do
+            docker pull ${image}
+        done
+    
+    fi
+
+}
 
 function install_prerequisites {
     echo "Installing Helm Prerequisites"

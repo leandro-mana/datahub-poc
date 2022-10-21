@@ -1,5 +1,8 @@
 elasticsearch:
   enabled: true
+  image: elasticsearch
+  imageTag: 7.17.3
+  ImagePullPolicy: Never
   replicas: 1
   minimumMasterNodes: 1
   antiAffinity: "soft"
@@ -22,18 +25,28 @@ elasticsearch:
 
 neo4j-community:
   enabled: true
+  image: neo4j
+  imageTag: 4.2.4-community
+  ImagePullPolicy: Never
   acceptLicenseAgreement: "yes"
   defaultDatabase: "graph.db"
   existingPasswordSecret: neo4j-secrets
 
 mysql:
   enabled: true
+  image:
+    repository: bitnami/mysql
+    tag: 8.0.29-debian-10-r23
+    PullPolicy: Never
   auth:
     existingSecret: mysql-secrets
 
 cp-helm-charts:
   cp-schema-registry:
     enabled: true
+    image: confluentinc/cp-schema-registry
+    imageTag: 6.0.10
+    ImagePullPolicy: Never
     kafka:
       bootstrapServers: "prerequisites-kafka:9092"
   cp-kafka:
@@ -51,3 +64,14 @@ cp-helm-charts:
 
 kafka:
   enabled: true
+  image:
+    repository: bitnami/kafka
+    tag: 3.2.0-debian-10-r4
+    ImagePullPolicy: Never
+
+  zookeper:
+    enabled: true
+    image:
+      repository: bitnami/zookeeper
+      tag: 3.8.0-debian-10-r64
+      ImagePullPolicy: Never

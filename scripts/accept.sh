@@ -19,10 +19,20 @@ function get_config {
     
     fi
 
-} 
+}
 
 function kubectl_profile {
     kubectl config use-context ${CONTEXT}
+
+}
+
+function setup_namespace {
+    IS_NAMESPACE=$(kubectl get namespace --no-headers -o custom-columns=":metadata.name" | grep -w ${NAMESPACE} || echo NOT)
+    if [ ${IS_NAMESPACE} == 'NOT' ]; then
+        kubectl create namespace ${NAMESPACE}
+
+    fi
+    echo "Namespace: ${NAMESPACE} Setup"
 
 }
 
@@ -51,7 +61,7 @@ function deploy_prerequisites {
     helm -n ${NAMESPACE} \
         upgrade --install prerequisites ${HELM_PREREQ_DIR} \
         --values ${HELM_PREREQ_DIR}/values/${DATAHUB_ENVIRONMENT}.yaml \
-        --create-namespace \
+        --timeout ${HELM_DEPLOYMENT_TIMEOUT} \
         --wait
 
 }
@@ -59,9 +69,7 @@ function deploy_prerequisites {
 function deploy_datahub {
     helm -n ${NAMESPACE} \
         upgrade --install datahub datahub/datahub \
-        --values ${HELM_DATAHUB_VALUES_DIR}/${DATAHUB_ENVIRONMENT}.yaml \
-        --create-namespace \
-        --wait
+        --values ${HELM_DATAHUB_VALUES_DIR}/${DATAHUB_ENVIRONMENT}.yaml
 
 }
 
@@ -69,6 +77,7 @@ function deploy_datahub {
 echo "Accept Stage Start"
 get_config
 kubectl_profile
+setup_namespace
 setup_secrets
 deploy_prerequisites
 deploy_datahub

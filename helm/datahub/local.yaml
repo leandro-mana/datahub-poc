@@ -2,48 +2,40 @@ datahub-gms:
   enabled: true
   image:
     repository: linkedin/datahub-gms
-    tag: "v0.8.45"
+    tag: "v0.9.0"
 
 datahub-frontend:
   enabled: true
   image:
     repository: linkedin/datahub-frontend-react
+    tag: "v0.9.0"
   ingress:
     enabled: false
 
 acryl-datahub-actions:
   enabled: false
-  image:
-    repository: acryldata/datahub-actions
-    tag: "b2c28a1"
-  resources:
-    limits:
-      memory: 512Mi
-    requests:
-      cpu: 300m
-      memory: 256Mi
 
 datahub-mae-consumer:
   image:
     repository: linkedin/datahub-mae-consumer
-    tag: "v0.8.45"
+    tag: "v0.9.0"
+    ImagePullPolicy: Never
 
 datahub-mce-consumer:
   image:
     repository: linkedin/datahub-mce-consumer
-    tag: "v0.8.45"
+    tag: "v0.9.0"
+    ImagePullPolicy: Never
 
 datahub-ingestion-cron:
   enabled: false
-  image:
-    repository: acryldata/datahub-ingestion
-    tag: "v0.8.45"
 
 elasticsearchSetupJob:
   enabled: true
   image:
     repository: linkedin/datahub-elasticsearch-setup
     tag: "79575b2"
+    ImagePullPolicy: Never
   podSecurityContext:
     fsGroup: 1000
   securityContext:
@@ -54,7 +46,8 @@ kafkaSetupJob:
   enabled: true
   image:
     repository: linkedin/datahub-kafka-setup
-    tag: "v0.8.45"
+    tag: "v0.9.0"
+    ImagePullPolicy: Never
   podSecurityContext:
     fsGroup: 1000
   securityContext:
@@ -65,7 +58,8 @@ mysqlSetupJob:
   enabled: true
   image:
     repository: acryldata/datahub-mysql-setup
-    tag: "v0.8.45"
+    tag: "v0.9.0"
+    ImagePullPolicy: Never
   podSecurityContext:
     fsGroup: 1000
   securityContext:
@@ -74,52 +68,12 @@ mysqlSetupJob:
 
 postgresqlSetupJob:
   enabled: false
-  image:
-    repository: acryldata/datahub-postgres-setup
-    tag: "v0.9.0"
-  podSecurityContext:
-    fsGroup: 1000
-  securityContext:
-    runAsUser: 1000
-  podAnnotations: {}
 
 datahubUpgrade:
   enabled: false
-  image:
-    repository: acryldata/datahub-upgrade
-    tag: "v0.9.0"
-  batchSize: 1000
-  batchDelayMs: 100
-  noCodeDataMigration:
-    sqlDbType: "MYSQL"
-    # sqlDbType: "POSTGRES"
-  podSecurityContext: {}
-    # fsGroup: 1000
-  securityContext: {}
-    # runAsUser: 1000
-  podAnnotations: {}
-  restoreIndices:
-    resources:
-      limits:
-        cpu: 500m
-        memory: 512Mi
-      requests:
-        cpu: 300m
-        memory: 256Mi
 
 prometheus-kafka-exporter:
   enabled: false
-  kafkaServer:
-  - prerequisites-kafka:9092
-  sarama:
-    logEnabled: true
-  prometheus:
-    serviceMonitor:
-      enabled: true
-      namespace: monitoring
-      interval: "30s"
-      additionalLabels: {}
-      targetLabels: []
 
 global:
   graph_service_impl: neo4j
